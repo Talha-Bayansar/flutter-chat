@@ -1,3 +1,4 @@
+import 'package:chat/services/auth.dart';
 import 'package:chat/state/chat_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -56,8 +57,7 @@ class MessageInputRow extends StatelessWidget {
                 'chatId':
                     Provider.of<ChatData>(context, listen: false).activeChat,
                 'message': messageController.text,
-                'sender': Provider.of<ChatData>(context, listen: false)
-                    .currentUser["uid"],
+                'sender': AuthMethods().auth.currentUser.uid,
                 "ts": FieldValue.serverTimestamp(),
               });
 
