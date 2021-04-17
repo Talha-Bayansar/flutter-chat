@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:chat/components/messageInputRow.dart';
 import 'package:chat/components/messages/receiverMessage.dart';
 import 'package:chat/components/messages/senderMessage.dart';
+import 'package:chat/services/auth.dart';
 import 'package:chat/state/chat_data.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +43,7 @@ class _ChatState extends State<Chat> {
   void initState() {
     super.initState();
     _scrollController.addListener(_scrollListener);
+    _scrollToBottom();
   }
 
   @override
@@ -89,8 +91,7 @@ Widget messageStreamBuilder(context, snapshot) {
   }
   List<Widget> messages = [];
   for (var message in snapshot.data.docs) {
-    if (message["sender"] ==
-        Provider.of<ChatData>(context).currentUser["uid"]) {
+    if (message["sender"] == AuthMethods().auth.currentUser.uid) {
       messages.add(
         SenderMessage(
           message: message["message"],

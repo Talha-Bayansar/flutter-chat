@@ -1,5 +1,6 @@
 import 'package:chat/screens/home.dart';
 import 'package:chat/screens/login.dart';
+import 'package:chat/services/auth.dart';
 import 'package:chat/state/chat_data.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -24,8 +25,20 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: _auth.currentUser == null ? Login() : Home(),
+        home: FutureBuilder(
+          future: AuthMethods().getCurrentUser(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              print(snapshot);
+              return Home();
+            } else {
+              return Login();
+            }
+          },
+        ),
       ),
     );
   }
 }
+
+// _auth.currentUser == null ? Login() : Home(),

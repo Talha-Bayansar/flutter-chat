@@ -1,6 +1,7 @@
 import 'package:chat/components/customAvatar.dart';
 import 'package:chat/screens/chat.dart';
 import 'package:chat/screens/login.dart';
+import 'package:chat/services/auth.dart';
 import 'package:chat/state/chat_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -34,14 +35,14 @@ class Home extends StatelessWidget {
                         TextButton(
                           onPressed: () {
                             Navigator.pop(context);
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Login(),
-                              ),
-                            );
-                            Provider.of<ChatData>(context, listen: false)
-                                .logout();
+                            AuthMethods().signOut().then((value) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Login(),
+                                ),
+                              );
+                            });
                           },
                           child: Text("Sign Out"),
                         ),
@@ -69,8 +70,7 @@ class Home extends StatelessWidget {
                 .firestore
                 .collection("chats")
                 .where("users",
-                    arrayContains: Provider.of<ChatData>(context, listen: false)
-                        .currentUser["uid"])
+                    arrayContains: AuthMethods().auth.currentUser.uid)
                 .snapshots(),
             builder: chatsStream,
           ),
@@ -153,7 +153,7 @@ Widget chatsStream(context, AsyncSnapshot<QuerySnapshot> snapshot) {
 String getUsername(BuildContext context, dynamic chat) {
   String username = "No Name Found";
   for (var user in chat["users"]) {
-    if (!(Provider.of<ChatData>(context).currentUser["uid"] == user)) {
+    if (!(AuthMethods().auth.currentUser.uid == user)) {
       String receiverId = user;
       for (var infoUser in chat["infoUsers"]) {
         if (receiverId == infoUser["uid"]) {

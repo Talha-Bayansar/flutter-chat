@@ -1,6 +1,7 @@
 import 'package:chat/components/customTextButton.dart';
 import 'package:chat/components/customTextFormField.dart';
 import 'package:chat/components/customTitle.dart';
+import 'package:chat/screens/register.dart';
 import 'package:chat/state/chat_data.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -68,6 +69,17 @@ class Login extends StatelessWidget {
                 text: "Login",
                 textColor: Colors.white,
               ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Register(),
+                    ),
+                  );
+                },
+                child: Text("Register"),
+              )
             ],
           ),
         ),

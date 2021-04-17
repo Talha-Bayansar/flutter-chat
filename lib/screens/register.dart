@@ -2,12 +2,14 @@ import 'package:chat/components/customTextButton.dart';
 import 'package:chat/components/customTextFormField.dart';
 import 'package:chat/components/customTitle.dart';
 import 'package:chat/screens/home.dart';
+import 'package:chat/screens/login.dart';
+import 'package:chat/services/auth.dart';
 import 'package:chat/state/chat_data.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Register extends StatelessWidget {
-  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController passwordController2 = TextEditingController();
@@ -25,11 +27,11 @@ class Register extends StatelessWidget {
                 text: "Welcome!",
               ),
               CustomTextFormField(
-                controller: usernameController,
-                label: "Username",
+                controller: nameController,
+                label: "Name",
                 validator: (value) {
                   if (value.isEmpty) {
-                    return "Please enter a username.";
+                    return "Please enter your name.";
                   }
                   return null;
                 },
@@ -75,9 +77,11 @@ class Register extends StatelessWidget {
                 onPressed: () async {
                   if (_formKey.currentState.validate()) {
                     try {
-                      await Provider.of<ChatData>(context, listen: false)
-                          .register(
-                              emailController.text, passwordController.text);
+                      await AuthMethods().createUserWithEmailPassword(
+                          context,
+                          emailController.text,
+                          passwordController.text,
+                          nameController.text);
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
@@ -91,6 +95,17 @@ class Register extends StatelessWidget {
                 text: "Register",
                 textColor: Colors.white,
               ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Login(),
+                    ),
+                  );
+                },
+                child: Text("Login"),
+              )
             ],
           ),
         ),
